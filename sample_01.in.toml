@@ -1,0 +1,26 @@
+IdentifierPrefix= "BlockWeb"
+
+DNSBlockedAddresses = [
+    "facebook.com",
+    "static.facebook.com",
+    "www.facebook.com",
+    "api.facebook.com",
+    "edge-mqtt.facebook.com",
+    "messenger.com",
+    "www.messenger.com",
+]
+
+TLSBlockedAddresses= [
+    "facebook.com",
+    "*.facebook.com",
+    "messenger.com",
+    "*.messenger.com",
+    "fbcdn.net",
+    "*.fbcdn.net",
+]
+
+DisableIntervals= [
+    {start="08:30:00", end="09:08:00"},
+    {start="14:00:00", end="15:05:00"},
+    {start="18:00:00", end="19:03:00"},
+]

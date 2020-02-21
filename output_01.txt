@@ -1,0 +1,67 @@
+
+#######################################
+# Remove old "BlockWeb" configuration #
+#######################################
+
+/system scheduler remove         [/system scheduler find name~"BlockWeb*"]
+/system script remove            [/system script find name~"BlockWeb*"]
+/ip firewall filter remove       [/ip firewall filter find comment~"BlockWeb*"]
+/ip firewall address-list remove [/ip firewall address-list find list~"BlockWeb*"]
+
+################################
+# create address-list BlockWeb #
+################################
+
+/ip firewall address-list
+
+add address=facebook.com           list=BlockWeb
+add address=static.facebook.com    list=BlockWeb
+add address=www.facebook.com       list=BlockWeb
+add address=api.facebook.com       list=BlockWeb
+add address=edge-mqtt.facebook.com list=BlockWeb
+add address=messenger.com          list=BlockWeb
+add address=www.messenger.com      list=BlockWeb
+
+###################################
+# configure firewall filter rules #
+###################################
+
+/ip firewall filter
+
+add comment="BlockWeb:DNS" action=reject chain=forward dst-address-list=blocked_web reject-with=icmp-network-unreachable
+
+add comment="BlockWeb:TLS" action=reject chain=forward protocol=tcp reject-with=icmp-network-unreachable tls-host="facebook.com"
+add comment="BlockWeb:TLS" action=reject chain=forward protocol=tcp reject-with=icmp-network-unreachable tls-host="*.facebook.com"
+add comment="BlockWeb:TLS" action=reject chain=forward protocol=tcp reject-with=icmp-network-unreachable tls-host="messenger.com"
+add comment="BlockWeb:TLS" action=reject chain=forward protocol=tcp reject-with=icmp-network-unreachable tls-host="*.messenger.com"
+add comment="BlockWeb:TLS" action=reject chain=forward protocol=tcp reject-with=icmp-network-unreachable tls-host="fbcdn.net"
+add comment="BlockWeb:TLS" action=reject chain=forward protocol=tcp reject-with=icmp-network-unreachable tls-host="*.fbcdn.net"
+
+##############################################
+# create scripts to enable / disable filters #
+##############################################
+
+/system script
+add name="BlockWeb:Enable" source="/foreach rule in=[/ip firewall filter find comment~\"BlockWeb*\"] do={ /ip firewall filter set \$rule disabled=no }"
+add name="BlockWeb:Disable" source="/foreach rule in=[/ip firewall filter find comment~\"BlockWeb*\"] do={ /ip firewall filter set \$rule disabled=yes }"
+
+####################
+# schedule scripts #
+####################
+
+/system scheduler
+add name="BlockWeb: Disable at 08:30:00" on-event="BlockWeb:Disable" interval=1d  start-time="08:30:00"
+add name="BlockWeb: Enable  at 08:30:00" on-event="BlockWeb:Enable" interval=1d  start-time="08:30:00"
+add name="BlockWeb: Disable at 14:00:00" on-event="BlockWeb:Disable" interval=1d  start-time="14:00:00"
+add name="BlockWeb: Enable  at 14:00:00" on-event="BlockWeb:Enable" interval=1d  start-time="14:00:00"
+add name="BlockWeb: Disable at 18:00:00" on-event="BlockWeb:Disable" interval=1d  start-time="18:00:00"
+add name="BlockWeb: Enable  at 18:00:00" on-event="BlockWeb:Enable" interval=1d  start-time="18:00:00"
+
+#######################
+# print configuration #
+#######################
+
+/system scheduler print
+/system script print
+/ip firewall filter print
+/ip firewall address-list print

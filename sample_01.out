@@ -37,6 +37,8 @@ add comment="BlockWeb:TLS" action=reject chain=forward protocol=tcp reject-with=
 add comment="BlockWeb:TLS" action=reject chain=forward protocol=tcp reject-with=icmp-network-unreachable tls-host="fbcdn.net"
 add comment="BlockWeb:TLS" action=reject chain=forward protocol=tcp reject-with=icmp-network-unreachable tls-host="*.fbcdn.net"
 
+move destination=([find comment~"defconf*"]->0) numbers=[/ip firewall filter find comment~"BlockWeb*"]
+
 ##############################################
 # create scripts to enable / disable filters #
 ##############################################

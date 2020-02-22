@@ -80,6 +80,13 @@ func (g *generator) generateFirewallFilter() {
 			address,
 		))
 	}
+
+	g.writeLine("")
+	g.writeLine(fmt.Sprintf(
+		// TODO: hardcoded defconf
+		`move destination=([find comment~"defconf*"]->0) numbers=[/ip firewall filter find comment~"%s*"]`,
+		g.IdentifierPrefix,
+	))
 }
 
 func (g *generator) generateToggleScripts() {

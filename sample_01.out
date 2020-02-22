@@ -28,7 +28,7 @@ add address=www.messenger.com      list=BlockWeb
 
 /ip firewall filter
 
-add comment="BlockWeb:DNS" action=reject chain=forward dst-address-list=blocked_web reject-with=icmp-network-unreachable
+add comment="BlockWeb:DNS" action=reject chain=forward dst-address-list="BlockWeb" reject-with=icmp-network-unreachable
 
 add comment="BlockWeb:TLS" action=reject chain=forward protocol=tcp reject-with=icmp-network-unreachable tls-host="facebook.com"
 add comment="BlockWeb:TLS" action=reject chain=forward protocol=tcp reject-with=icmp-network-unreachable tls-host="*.facebook.com"

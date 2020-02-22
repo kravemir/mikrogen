@@ -68,8 +68,9 @@ func (g *generator) generateFirewallFilter() {
 	g.writeLine("")
 
 	g.writeLine(fmt.Sprintf(
-		`add comment="%s" action=reject chain=forward dst-address-list=blocked_web reject-with=icmp-network-unreachable`,
+		`add comment="%s" action=reject chain=forward dst-address-list="%s" reject-with=icmp-network-unreachable`,
 		g.IdentifierPrefix+":DNS",
+		g.IdentifierPrefix,
 	))
 	g.writeLine("")
 

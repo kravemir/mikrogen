@@ -6,7 +6,7 @@
 /system scheduler remove         [/system scheduler find name~"BlockWeb*"]
 /system script remove            [/system script find name~"BlockWeb*"]
 /ip firewall filter remove       [/ip firewall filter find comment~"BlockWeb*"]
-/ip firewall address-list remove [/ip firewall address-list find list~"BlockWeb*"]
+/ip firewall address-list remove [/ip firewall address-list find list~"BlockWeb*" dynamic=no]
 
 ################################
 # create address-list BlockWeb #

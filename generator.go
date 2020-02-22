@@ -40,7 +40,7 @@ func (g *generator) generateOldCleanup() {
 		},
 		{
 			"/ip firewall address-list remove",
-			fmt.Sprintf(`[/ip firewall address-list find list~"%s*"]`, g.IdentifierPrefix),
+			fmt.Sprintf(`[/ip firewall address-list find list~"%s*" dynamic=no]`, g.IdentifierPrefix),
 		},
 	})
 }

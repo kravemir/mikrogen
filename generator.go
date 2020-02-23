@@ -2,6 +2,7 @@ package mikrogen
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 )
 
@@ -33,6 +34,7 @@ func (g *generator) sortedKeys() []string {
 	for key := range g.AccessFilters {
 		keys = append(keys, key)
 	}
+	sort.Strings(keys)
 	return keys
 }
 

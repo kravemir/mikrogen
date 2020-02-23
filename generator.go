@@ -15,7 +15,7 @@ func (g *generator) generate() string {
 	g.generateOldCleanup()
 
 	for _, name := range g.sortedKeys() {
-		blocker := g.AccessBlockers[name]
+		blocker := g.AccessFilters[name]
 
 		g.generateAddressList(name, blocker)
 		g.generateFirewallFilter(name, blocker)
@@ -30,7 +30,7 @@ func (g *generator) generate() string {
 
 func (g *generator) sortedKeys() []string {
 	keys := []string{}
-	for key := range g.AccessBlockers {
+	for key := range g.AccessFilters {
 		keys = append(keys, key)
 	}
 	return keys
@@ -59,7 +59,7 @@ func (g *generator) generateOldCleanup() {
 	})
 }
 
-func (g *generator) generateAddressList(name string, blocker AccessBlocker) {
+func (g *generator) generateAddressList(name string, blocker AccessFilter) {
 	blockerPrefix := g.IdentifierPrefix + ":" + name
 
 	g.printSectionf("create address-list %s", blockerPrefix)
@@ -68,7 +68,7 @@ func (g *generator) generateAddressList(name string, blocker AccessBlocker) {
 	g.writeLine("")
 
 	rows := [][]string{}
-	for _, address := range blocker.DNSBlockedAddresses {
+	for _, address := range blocker.TargetAddresses {
 		rows = append(rows, []string{
 			fmt.Sprintf("add address=%s", address),
 			fmt.Sprintf("list=%s", blockerPrefix),
@@ -77,7 +77,7 @@ func (g *generator) generateAddressList(name string, blocker AccessBlocker) {
 	g.writeTable(rows)
 }
 
-func (g *generator) generateFirewallFilter(name string, blocker AccessBlocker) {
+func (g *generator) generateFirewallFilter(name string, blocker AccessFilter) {
 	blockerPrefix := g.IdentifierPrefix + ":" + name
 
 	g.printSectionf("configure firewall filter rules: %s", blockerPrefix)
@@ -92,7 +92,7 @@ func (g *generator) generateFirewallFilter(name string, blocker AccessBlocker) {
 	))
 	g.writeLine("")
 
-	for _, address := range blocker.TLSBlockedAddresses {
+	for _, address := range blocker.TargetTLSHosts {
 		g.writeLine(fmt.Sprintf(
 			`add comment="%s" action=reject chain=forward protocol=tcp reject-with=icmp-network-unreachable tls-host="%s"`,
 			blockerPrefix+":TLS",
@@ -108,7 +108,7 @@ func (g *generator) generateFirewallFilter(name string, blocker AccessBlocker) {
 	))
 }
 
-func (g *generator) generateToggleScripts(name string, _ AccessBlocker) {
+func (g *generator) generateToggleScripts(name string, _ AccessFilter) {
 	blockerPrefix := g.IdentifierPrefix + ":" + name
 
 	g.printSectionf("create scripts to enable / disable filters")
@@ -127,7 +127,7 @@ func (g *generator) generateToggleScripts(name string, _ AccessBlocker) {
 	))
 }
 
-func (g *generator) generateScheduler(name string, blocker AccessBlocker) {
+func (g *generator) generateScheduler(name string, blocker AccessFilter) {
 	blockerPrefix := g.IdentifierPrefix + ":" + name
 
 	g.printSectionf("schedule scripts")

@@ -1,8 +1,8 @@
 IdentifierPrefix= "BlockWeb"
 
 
-[AccessBlockers.AntiSocialNetworksEscapism]
-DNSBlockedAddresses = [
+[AccessFilters.AntiSocialNetworksEscapism]
+TargetAddresses = [
     "facebook.com",
     "static.facebook.com",
     "www.facebook.com",
@@ -11,7 +11,7 @@ DNSBlockedAddresses = [
     "messenger.com",
     "www.messenger.com",
 ]
-TLSBlockedAddresses= [
+TargetTLSHosts= [
     "facebook.com",
     "*.facebook.com",
     "messenger.com",
@@ -26,12 +26,12 @@ DisableIntervals= [
 ]
 
 
-[AccessBlockers.ShoppingManiaRestriction]
-DNSBlockedAddresses = [
+[AccessFilters.ShoppingManiaRestriction]
+TargetAddresses = [
     "aliexpress.com",
     "www.aliexpress.com",
 ]
-TLSBlockedAddresses= [
+TargetTLSHosts= [
     "aliexpress.com",
     "*.aliexpress.com",
 ]

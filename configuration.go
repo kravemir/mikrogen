@@ -4,12 +4,15 @@ package mikrogen
 type Configuration struct {
 	IdentifierPrefix string
 
-	AccessBlockers map[string]AccessBlocker
+	AccessFilters map[string]AccessFilter
 }
 
-type AccessBlocker struct {
-	DNSBlockedAddresses []string
-	TLSBlockedAddresses []string
+// Defines a filter for restricting access to specific addresses and TLS hosts.
+type AccessFilter struct {
+	// List of addresses to be managed
+	TargetAddresses []string
+	// List of addresses specifying TLS/HTTPS access filtering.
+	TargetTLSHosts  []string
 
 	DisableIntervals []Interval
 }

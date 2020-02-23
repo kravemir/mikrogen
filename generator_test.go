@@ -5,6 +5,7 @@ import (
 	"github.com/knadh/koanf"
 	"github.com/knadh/koanf/parsers/toml"
 	"github.com/knadh/koanf/providers/file"
+	"github.com/mitchellh/mapstructure"
 	"gotest.tools/assert"
 	"io/ioutil"
 	"path"
@@ -41,7 +42,14 @@ func loadConfig(filename string) Configuration {
 	}
 
 	var c Configuration
-	err = k.Unmarshal("", &c)
+	err = k.UnmarshalWithConf("", nil, koanf.UnmarshalConf{
+		Tag:           "",
+		FlatPaths:     false,
+		DecoderConfig: &mapstructure.DecoderConfig{
+			ErrorUnused: true,
+			Result:      &c,
+		},
+	})
 	if err != nil {
 		panic(err)
 	}

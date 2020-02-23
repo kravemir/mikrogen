@@ -8,56 +8,96 @@
 /ip firewall filter remove       [/ip firewall filter find comment~"BlockWeb*"]
 /ip firewall address-list remove [/ip firewall address-list find list~"BlockWeb*" dynamic=no]
 
-################################
-# create address-list BlockWeb #
-################################
+###########################################################
+# create address-list BlockWeb:AntiSocialNetworksEscapism #
+###########################################################
 
 /ip firewall address-list
 
-add address=facebook.com           list=BlockWeb
-add address=static.facebook.com    list=BlockWeb
-add address=www.facebook.com       list=BlockWeb
-add address=api.facebook.com       list=BlockWeb
-add address=edge-mqtt.facebook.com list=BlockWeb
-add address=messenger.com          list=BlockWeb
-add address=www.messenger.com      list=BlockWeb
+add address=facebook.com           list=BlockWeb:AntiSocialNetworksEscapism
+add address=static.facebook.com    list=BlockWeb:AntiSocialNetworksEscapism
+add address=www.facebook.com       list=BlockWeb:AntiSocialNetworksEscapism
+add address=api.facebook.com       list=BlockWeb:AntiSocialNetworksEscapism
+add address=edge-mqtt.facebook.com list=BlockWeb:AntiSocialNetworksEscapism
+add address=messenger.com          list=BlockWeb:AntiSocialNetworksEscapism
+add address=www.messenger.com      list=BlockWeb:AntiSocialNetworksEscapism
 
-###################################
-# configure firewall filter rules #
-###################################
+########################################################################
+# configure firewall filter rules: BlockWeb:AntiSocialNetworksEscapism #
+########################################################################
 
 /ip firewall filter
 
-add comment="BlockWeb:DNS" action=reject chain=forward dst-address-list="BlockWeb" reject-with=icmp-network-unreachable
+add comment="BlockWeb:AntiSocialNetworksEscapism:DNS" action=reject chain=forward dst-address-list="BlockWeb:AntiSocialNetworksEscapism" reject-with=icmp-network-unreachable
 
-add comment="BlockWeb:TLS" action=reject chain=forward protocol=tcp reject-with=icmp-network-unreachable tls-host="facebook.com"
-add comment="BlockWeb:TLS" action=reject chain=forward protocol=tcp reject-with=icmp-network-unreachable tls-host="*.facebook.com"
-add comment="BlockWeb:TLS" action=reject chain=forward protocol=tcp reject-with=icmp-network-unreachable tls-host="messenger.com"
-add comment="BlockWeb:TLS" action=reject chain=forward protocol=tcp reject-with=icmp-network-unreachable tls-host="*.messenger.com"
-add comment="BlockWeb:TLS" action=reject chain=forward protocol=tcp reject-with=icmp-network-unreachable tls-host="fbcdn.net"
-add comment="BlockWeb:TLS" action=reject chain=forward protocol=tcp reject-with=icmp-network-unreachable tls-host="*.fbcdn.net"
+add comment="BlockWeb:AntiSocialNetworksEscapism:TLS" action=reject chain=forward protocol=tcp reject-with=icmp-network-unreachable tls-host="facebook.com"
+add comment="BlockWeb:AntiSocialNetworksEscapism:TLS" action=reject chain=forward protocol=tcp reject-with=icmp-network-unreachable tls-host="*.facebook.com"
+add comment="BlockWeb:AntiSocialNetworksEscapism:TLS" action=reject chain=forward protocol=tcp reject-with=icmp-network-unreachable tls-host="messenger.com"
+add comment="BlockWeb:AntiSocialNetworksEscapism:TLS" action=reject chain=forward protocol=tcp reject-with=icmp-network-unreachable tls-host="*.messenger.com"
+add comment="BlockWeb:AntiSocialNetworksEscapism:TLS" action=reject chain=forward protocol=tcp reject-with=icmp-network-unreachable tls-host="fbcdn.net"
+add comment="BlockWeb:AntiSocialNetworksEscapism:TLS" action=reject chain=forward protocol=tcp reject-with=icmp-network-unreachable tls-host="*.fbcdn.net"
 
-move destination=([find comment~"defconf*"]->0) numbers=[/ip firewall filter find comment~"BlockWeb*"]
+move destination=([find comment~"defconf*"]->0) numbers=[/ip firewall filter find comment~"BlockWeb:AntiSocialNetworksEscapism*"]
 
 ##############################################
 # create scripts to enable / disable filters #
 ##############################################
 
 /system script
-add name="BlockWeb:Enable" source="/foreach rule in=[/ip firewall filter find comment~\"BlockWeb*\"] do={ /ip firewall filter set \$rule disabled=no }"
-add name="BlockWeb:Disable" source="/foreach rule in=[/ip firewall filter find comment~\"BlockWeb*\"] do={ /ip firewall filter set \$rule disabled=yes }"
+add name="BlockWeb:AntiSocialNetworksEscapism:Enable" source="/foreach rule in=[/ip firewall filter find comment~\"BlockWeb:AntiSocialNetworksEscapism*\"] do={ /ip firewall filter set \$rule disabled=no }"
+add name="BlockWeb:AntiSocialNetworksEscapism:Disable" source="/foreach rule in=[/ip firewall filter find comment~\"BlockWeb:AntiSocialNetworksEscapism*\"] do={ /ip firewall filter set \$rule disabled=yes }"
 
 ####################
 # schedule scripts #
 ####################
 
 /system scheduler
-add name="BlockWeb: Disable at 08:30:00" on-event="BlockWeb:Disable" interval=1d  start-time="08:30:00"
-add name="BlockWeb: Enable  at 08:30:00" on-event="BlockWeb:Enable" interval=1d  start-time="08:30:00"
-add name="BlockWeb: Disable at 14:00:00" on-event="BlockWeb:Disable" interval=1d  start-time="14:00:00"
-add name="BlockWeb: Enable  at 14:00:00" on-event="BlockWeb:Enable" interval=1d  start-time="14:00:00"
-add name="BlockWeb: Disable at 18:00:00" on-event="BlockWeb:Disable" interval=1d  start-time="18:00:00"
-add name="BlockWeb: Enable  at 18:00:00" on-event="BlockWeb:Enable" interval=1d  start-time="18:00:00"
+add name="BlockWeb:AntiSocialNetworksEscapism: Disable at 08:30:00" on-event="BlockWeb:AntiSocialNetworksEscapism:Disable" interval=1d  start-time="08:30:00"
+add name="BlockWeb:AntiSocialNetworksEscapism: Enable  at 08:30:00" on-event="BlockWeb:AntiSocialNetworksEscapism:Enable" interval=1d  start-time="08:30:00"
+add name="BlockWeb:AntiSocialNetworksEscapism: Disable at 14:00:00" on-event="BlockWeb:AntiSocialNetworksEscapism:Disable" interval=1d  start-time="14:00:00"
+add name="BlockWeb:AntiSocialNetworksEscapism: Enable  at 14:00:00" on-event="BlockWeb:AntiSocialNetworksEscapism:Enable" interval=1d  start-time="14:00:00"
+add name="BlockWeb:AntiSocialNetworksEscapism: Disable at 18:00:00" on-event="BlockWeb:AntiSocialNetworksEscapism:Disable" interval=1d  start-time="18:00:00"
+add name="BlockWeb:AntiSocialNetworksEscapism: Enable  at 18:00:00" on-event="BlockWeb:AntiSocialNetworksEscapism:Enable" interval=1d  start-time="18:00:00"
+
+#########################################################
+# create address-list BlockWeb:ShoppingManiaRestriction #
+#########################################################
+
+/ip firewall address-list
+
+add address=aliexpress.com     list=BlockWeb:ShoppingManiaRestriction
+add address=www.aliexpress.com list=BlockWeb:ShoppingManiaRestriction
+
+######################################################################
+# configure firewall filter rules: BlockWeb:ShoppingManiaRestriction #
+######################################################################
+
+/ip firewall filter
+
+add comment="BlockWeb:ShoppingManiaRestriction:DNS" action=reject chain=forward dst-address-list="BlockWeb:ShoppingManiaRestriction" reject-with=icmp-network-unreachable
+
+add comment="BlockWeb:ShoppingManiaRestriction:TLS" action=reject chain=forward protocol=tcp reject-with=icmp-network-unreachable tls-host="aliexpress.com"
+add comment="BlockWeb:ShoppingManiaRestriction:TLS" action=reject chain=forward protocol=tcp reject-with=icmp-network-unreachable tls-host="*.aliexpress.com"
+
+move destination=([find comment~"defconf*"]->0) numbers=[/ip firewall filter find comment~"BlockWeb:ShoppingManiaRestriction*"]
+
+##############################################
+# create scripts to enable / disable filters #
+##############################################
+
+/system script
+add name="BlockWeb:ShoppingManiaRestriction:Enable" source="/foreach rule in=[/ip firewall filter find comment~\"BlockWeb:ShoppingManiaRestriction*\"] do={ /ip firewall filter set \$rule disabled=no }"
+add name="BlockWeb:ShoppingManiaRestriction:Disable" source="/foreach rule in=[/ip firewall filter find comment~\"BlockWeb:ShoppingManiaRestriction*\"] do={ /ip firewall filter set \$rule disabled=yes }"
+
+####################
+# schedule scripts #
+####################
+
+/system scheduler
+add name="BlockWeb:ShoppingManiaRestriction: Disable at 14:00:00" on-event="BlockWeb:ShoppingManiaRestriction:Disable" interval=1d  start-time="14:00:00"
+add name="BlockWeb:ShoppingManiaRestriction: Enable  at 14:00:00" on-event="BlockWeb:ShoppingManiaRestriction:Enable" interval=1d  start-time="14:00:00"
+add name="BlockWeb:ShoppingManiaRestriction: Disable at 18:00:00" on-event="BlockWeb:ShoppingManiaRestriction:Disable" interval=1d  start-time="18:00:00"
+add name="BlockWeb:ShoppingManiaRestriction: Enable  at 18:00:00" on-event="BlockWeb:ShoppingManiaRestriction:Enable" interval=1d  start-time="18:00:00"
 
 #######################
 # print configuration #

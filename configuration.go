@@ -4,6 +4,10 @@ package mikrogen
 type Configuration struct {
 	IdentifierPrefix string
 
+	AccessBlockers map[string]AccessBlocker
+}
+
+type AccessBlocker struct {
 	DNSBlockedAddresses []string
 	TLSBlockedAddresses []string
 

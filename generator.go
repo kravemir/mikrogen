@@ -13,13 +13,27 @@ type generator struct {
 
 func (g *generator) generate() string {
 	g.generateOldCleanup()
-	g.generateAddressList()
-	g.generateFirewallFilter()
-	g.generateToggleScripts()
-	g.generateScheduler()
+
+	for _, name := range g.sortedKeys() {
+		blocker := g.AccessBlockers[name]
+
+		g.generateAddressList(name, blocker)
+		g.generateFirewallFilter(name, blocker)
+		g.generateToggleScripts(name, blocker)
+		g.generateScheduler(name, blocker)
+	}
+
 	g.generatePrintInfo()
 
 	return g.builder.String()
+}
+
+func (g *generator) sortedKeys() []string {
+	keys := []string{}
+	for key := range g.AccessBlockers {
+		keys = append(keys, key)
+	}
+	return keys
 }
 
 func (g *generator) generateOldCleanup() {
@@ -45,39 +59,43 @@ func (g *generator) generateOldCleanup() {
 	})
 }
 
-func (g *generator) generateAddressList() {
-	g.printSectionf("create address-list %s", g.IdentifierPrefix)
+func (g *generator) generateAddressList(name string, blocker AccessBlocker) {
+	blockerPrefix := g.IdentifierPrefix + ":" + name
+
+	g.printSectionf("create address-list %s", blockerPrefix)
 
 	g.writeLine("/ip firewall address-list")
 	g.writeLine("")
 
 	rows := [][]string{}
-	for _, address := range g.DNSBlockedAddresses {
+	for _, address := range blocker.DNSBlockedAddresses {
 		rows = append(rows, []string{
 			fmt.Sprintf("add address=%s", address),
-			fmt.Sprintf("list=%s", g.IdentifierPrefix),
+			fmt.Sprintf("list=%s", blockerPrefix),
 		})
 	}
 	g.writeTable(rows)
 }
 
-func (g *generator) generateFirewallFilter() {
-	g.printSectionf("configure firewall filter rules")
+func (g *generator) generateFirewallFilter(name string, blocker AccessBlocker) {
+	blockerPrefix := g.IdentifierPrefix + ":" + name
+
+	g.printSectionf("configure firewall filter rules: %s", blockerPrefix)
 
 	g.writeLine("/ip firewall filter")
 	g.writeLine("")
 
 	g.writeLine(fmt.Sprintf(
 		`add comment="%s" action=reject chain=forward dst-address-list="%s" reject-with=icmp-network-unreachable`,
-		g.IdentifierPrefix+":DNS",
-		g.IdentifierPrefix,
+		blockerPrefix+":DNS",
+		blockerPrefix,
 	))
 	g.writeLine("")
 
-	for _, address := range g.TLSBlockedAddresses {
+	for _, address := range blocker.TLSBlockedAddresses {
 		g.writeLine(fmt.Sprintf(
 			`add comment="%s" action=reject chain=forward protocol=tcp reject-with=icmp-network-unreachable tls-host="%s"`,
-			g.IdentifierPrefix+":TLS",
+			blockerPrefix+":TLS",
 			address,
 		))
 	}
@@ -86,43 +104,47 @@ func (g *generator) generateFirewallFilter() {
 	g.writeLine(fmt.Sprintf(
 		// TODO: hardcoded defconf
 		`move destination=([find comment~"defconf*"]->0) numbers=[/ip firewall filter find comment~"%s*"]`,
-		g.IdentifierPrefix,
+		blockerPrefix,
 	))
 }
 
-func (g *generator) generateToggleScripts() {
+func (g *generator) generateToggleScripts(name string, _ AccessBlocker) {
+	blockerPrefix := g.IdentifierPrefix + ":" + name
+
 	g.printSectionf("create scripts to enable / disable filters")
 
 	g.writeLine("/system script")
 
 	g.writeLine(fmt.Sprintf(
 		`add name="%s" source="/foreach rule in=[/ip firewall filter find comment~\"%s*\"] do={ /ip firewall filter set \$rule disabled=no }"`,
-		g.IdentifierPrefix+":Enable",
-		g.IdentifierPrefix,
+		blockerPrefix+":Enable",
+		blockerPrefix,
 	))
 	g.writeLine(fmt.Sprintf(
 		`add name="%s" source="/foreach rule in=[/ip firewall filter find comment~\"%s*\"] do={ /ip firewall filter set \$rule disabled=yes }"`,
-		g.IdentifierPrefix+":Disable",
-		g.IdentifierPrefix,
+		blockerPrefix+":Disable",
+		blockerPrefix,
 	))
 }
 
-func (g *generator) generateScheduler() {
+func (g *generator) generateScheduler(name string, blocker AccessBlocker) {
+	blockerPrefix := g.IdentifierPrefix + ":" + name
+
 	g.printSectionf("schedule scripts")
 
 	g.writeLine("/system scheduler")
 
-	for _, interval := range g.DisableIntervals {
+	for _, interval := range blocker.DisableIntervals {
 		g.writeLine(fmt.Sprintf(
 			`add name="%s" on-event="%s" interval=1d  start-time="%s"`,
-			g.IdentifierPrefix+": Disable at "+interval.Start,
-			g.IdentifierPrefix+":Disable",
+			blockerPrefix+": Disable at "+interval.Start,
+			blockerPrefix+":Disable",
 			interval.Start,
 		))
 		g.writeLine(fmt.Sprintf(
 			`add name="%s" on-event="%s" interval=1d  start-time="%s"`,
-			g.IdentifierPrefix+": Enable  at "+interval.Start,
-			g.IdentifierPrefix+":Enable",
+			blockerPrefix+": Enable  at "+interval.Start,
+			blockerPrefix+":Enable",
 			interval.Start,
 		))
 	}

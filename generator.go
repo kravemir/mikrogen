@@ -145,9 +145,9 @@ func (g *generator) generateScheduler(name string, blocker AccessFilter) {
 		))
 		g.writeLine(fmt.Sprintf(
 			`add name="%s" on-event="%s" interval=1d  start-time="%s"`,
-			blockerPrefix+": Enable  at "+interval.Start,
+			blockerPrefix+": Enable  at "+interval.End,
 			blockerPrefix+":Enable",
-			interval.Start,
+			interval.End,
 		))
 	}
 }

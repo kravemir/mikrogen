@@ -53,11 +53,11 @@ add name="BlockWeb:AntiSocialNetworksEscapism:Disable" source="/foreach rule in=
 
 /system scheduler
 add name="BlockWeb:AntiSocialNetworksEscapism: Disable at 08:30:00" on-event="BlockWeb:AntiSocialNetworksEscapism:Disable" interval=1d  start-time="08:30:00"
-add name="BlockWeb:AntiSocialNetworksEscapism: Enable  at 08:30:00" on-event="BlockWeb:AntiSocialNetworksEscapism:Enable" interval=1d  start-time="08:30:00"
+add name="BlockWeb:AntiSocialNetworksEscapism: Enable  at 09:08:00" on-event="BlockWeb:AntiSocialNetworksEscapism:Enable" interval=1d  start-time="09:08:00"
 add name="BlockWeb:AntiSocialNetworksEscapism: Disable at 14:00:00" on-event="BlockWeb:AntiSocialNetworksEscapism:Disable" interval=1d  start-time="14:00:00"
-add name="BlockWeb:AntiSocialNetworksEscapism: Enable  at 14:00:00" on-event="BlockWeb:AntiSocialNetworksEscapism:Enable" interval=1d  start-time="14:00:00"
+add name="BlockWeb:AntiSocialNetworksEscapism: Enable  at 15:05:00" on-event="BlockWeb:AntiSocialNetworksEscapism:Enable" interval=1d  start-time="15:05:00"
 add name="BlockWeb:AntiSocialNetworksEscapism: Disable at 18:00:00" on-event="BlockWeb:AntiSocialNetworksEscapism:Disable" interval=1d  start-time="18:00:00"
-add name="BlockWeb:AntiSocialNetworksEscapism: Enable  at 18:00:00" on-event="BlockWeb:AntiSocialNetworksEscapism:Enable" interval=1d  start-time="18:00:00"
+add name="BlockWeb:AntiSocialNetworksEscapism: Enable  at 19:03:00" on-event="BlockWeb:AntiSocialNetworksEscapism:Enable" interval=1d  start-time="19:03:00"
 
 #########################################################
 # create address-list BlockWeb:ShoppingManiaRestriction #
@@ -95,9 +95,9 @@ add name="BlockWeb:ShoppingManiaRestriction:Disable" source="/foreach rule in=[/
 
 /system scheduler
 add name="BlockWeb:ShoppingManiaRestriction: Disable at 14:00:00" on-event="BlockWeb:ShoppingManiaRestriction:Disable" interval=1d  start-time="14:00:00"
-add name="BlockWeb:ShoppingManiaRestriction: Enable  at 14:00:00" on-event="BlockWeb:ShoppingManiaRestriction:Enable" interval=1d  start-time="14:00:00"
+add name="BlockWeb:ShoppingManiaRestriction: Enable  at 16:05:00" on-event="BlockWeb:ShoppingManiaRestriction:Enable" interval=1d  start-time="16:05:00"
 add name="BlockWeb:ShoppingManiaRestriction: Disable at 18:00:00" on-event="BlockWeb:ShoppingManiaRestriction:Disable" interval=1d  start-time="18:00:00"
-add name="BlockWeb:ShoppingManiaRestriction: Enable  at 18:00:00" on-event="BlockWeb:ShoppingManiaRestriction:Enable" interval=1d  start-time="18:00:00"
+add name="BlockWeb:ShoppingManiaRestriction: Enable  at 19:03:00" on-event="BlockWeb:ShoppingManiaRestriction:Enable" interval=1d  start-time="19:03:00"
 
 #######################
 # print configuration #
